@@ -6,9 +6,13 @@ import jakarta.persistence.EnumeratedValue;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import jakarta.validation.constraints.Positive;
@@ -19,7 +23,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
-@Entity
+@Entity(name = "transaction")
 public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,12 +31,15 @@ public class Transaction {
 
     @ManyToOne
     @NotBlank
+    @JoinColumn(name = "id_wallet")
     private Wallet wallet;
 
     @ManyToOne
+    @JoinColumn(name = "id_category")
     private Category category;
 
     @ManyToOne
+    @JoinColumn(name = "id_user")
     private User createdBy;
 
     @EnumeratedValue
@@ -40,10 +47,13 @@ public class Transaction {
 
     @NotBlank
     @Positive
+    @DecimalMin("0.01")
     private BigDecimal value;
 
+    @Size(max = 255)
     private String description;
 
+    @PastOrPresent
     private LocalDate dateTransaction;
 
     private LocalDateTime createdIn = LocalDateTime.now();

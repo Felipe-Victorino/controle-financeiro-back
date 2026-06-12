@@ -7,6 +7,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -14,7 +15,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Data
-@Entity
+@Entity(name = "wallet")
 public class Wallet {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -24,15 +25,17 @@ public class Wallet {
     private User owner;
 
     @NotBlank
+    @Size(min = 2, max = 321)
     private String name;
 
+    @Size(max = 255)
     private String description;
 
     private LocalDateTime createdIn = LocalDateTime.now();
 
-    @OneToMany
+    @OneToMany(mappedBy = "wallet_member")
     private List<WalletMember> members;
 
-    @OneToMany
+    @OneToMany(mappedBy = "transaction")
     private List<Transaction> transactions;
 }

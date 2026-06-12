@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
-@Entity
+@Entity(name ="password_recovery_token")
 public class PasswordRecoveryToken {
 
     @Id

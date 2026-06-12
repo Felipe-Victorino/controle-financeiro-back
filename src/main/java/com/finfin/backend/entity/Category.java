@@ -6,13 +6,16 @@ import jakarta.persistence.EnumeratedValue;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-@Entity
+@Entity(name = "category")
 public class Category {
 
     @Id
@@ -21,9 +24,11 @@ public class Category {
 
     @ManyToOne
     @NotBlank
+    @JoinColumn(name = "id_user")
     private User user;
 
     @NotBlank
+    @Size(max=80)
     private String name;
 
     private String color;
@@ -32,6 +37,7 @@ public class Category {
 
     @NotBlank
     @EnumeratedValue
+    @Pattern(regexp = "RECEIPT|EXPENSE")
     private TransactionType type;
 
     private boolean isActive;
