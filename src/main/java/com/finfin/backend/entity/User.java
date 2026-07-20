@@ -1,5 +1,7 @@
 package com.finfin.backend.entity;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -10,8 +12,6 @@ import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
-import java.time.LocalDateTime;
-
 @Data
 @Entity(name = "user")
 public class User {
@@ -20,14 +20,17 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Name is required")
+    @NotBlank(message = "{user.name.needed}")
     @Size(min=2, max=100)
     private String name;
 
-    @Email(message = "Email is required")
+    @Email(message = "{user.email.needed}")
     private String email;
 
-    @NotBlank
+    
+    private String address;
+
+    @NotBlank(message = "{user.passwd.needed}")
     private String hashedPassword;
 
     @PastOrPresent
