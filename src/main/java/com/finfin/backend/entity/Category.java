@@ -25,9 +25,9 @@ public class Category {
     @ManyToOne
     @NotBlank
     @JoinColumn(name = "id_user")
-    private User user;
+    private User owner;
 
-    @NotBlank
+    @NotBlank(message ="{category.name.needed}")
     @Size(max=80)
     private String name;
 
