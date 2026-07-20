@@ -12,6 +12,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
@@ -30,7 +31,7 @@ public class Transaction {
     private Long id;
 
     @ManyToOne
-    @NotBlank
+    @NotBlank(message = "{transaction.wallet.needed}")
     @JoinColumn(name = "id_wallet")
     private Wallet wallet;
 
@@ -39,13 +40,15 @@ public class Transaction {
     private Category category;
 
     @ManyToOne
+    @NotBlank(message = "{transaction.createdBy.needed}")
     @JoinColumn(name = "id_user")
     private User createdBy;
 
     @EnumeratedValue
+    @Pattern(regexp = "RECEIPT|EXPENSE")
     private TransactionType type;
 
-    @NotBlank
+    @NotBlank(message = "{transaction.value.needed}")
     @Positive
     @DecimalMin("0.01")
     private BigDecimal value;
