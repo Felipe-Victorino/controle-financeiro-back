@@ -22,10 +22,11 @@ public class Wallet {
     private UUID id;
 
     @ManyToOne
+    @NotBlank(message = "{wallet.owner.needed}")
     private User owner;
 
-    @NotBlank
-    @Size(min = 2, max = 321)
+    @NotBlank(message = "{wallet.name.required}")
+    @Size(min = 2, max = 128)
     private String name;
 
     @Size(max = 255)
@@ -33,9 +34,9 @@ public class Wallet {
 
     private LocalDateTime createdIn = LocalDateTime.now();
 
-    @OneToMany(mappedBy = "wallet_member")
+    @OneToMany(mappedBy = "wallet")
     private List<WalletMember> members;
 
-    @OneToMany(mappedBy = "transaction")
+    @OneToMany(mappedBy = "wallet")
     private List<Transaction> transactions;
 }
