@@ -1,10 +1,8 @@
 package com.finfin.backend.exception;
 
-import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
