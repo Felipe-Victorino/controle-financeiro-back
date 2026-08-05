@@ -1,5 +1,6 @@
 package com.finfin.backend.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,6 +20,7 @@ import java.util.UUID;
 public class Wallet {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "wallet_id")
     private UUID id;
 
     @ManyToOne
