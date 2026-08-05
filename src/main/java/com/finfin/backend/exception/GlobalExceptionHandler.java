@@ -42,9 +42,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> treatException(Exception ex) {
+        String message = ex.getMessage();
+
         ErrorResponse error = new ErrorResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                "Erro interno do servidor",
+                message,
                 LocalDateTime.now());
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
@@ -52,9 +54,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorResponse> treatResourceNotFoundException(ResourceNotFoundException ex){
+        String message = ex.getMessage();
+
         ErrorResponse error = new ErrorResponse(
                 HttpStatus.NOT_FOUND.value(),
-                "Dados não encontrados",
+                message,
                 LocalDateTime.now()
         );
 
@@ -64,9 +68,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<ErrorResponse> treatMissingRequestParamenterException(MissingServletRequestParameterException ex){
+        String message = ex.getMessage();
+
         ErrorResponse error = new ErrorResponse(
                 HttpStatus.BAD_REQUEST.value(),
-                "Requisição contem parâmetros insuficientes",
+                message,
                 LocalDateTime.now()
         );
 
@@ -75,9 +81,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ErrorResponse> treatBusinessException(BusinessException ex){
+        String message = ex.getMessage();
+
         ErrorResponse error = new ErrorResponse(
                 HttpStatus.NOT_FOUND.value(),
-                "Dados não foram processado",
+                message,
                 LocalDateTime.now()
         );
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_CONTENT).body(error);
@@ -85,9 +93,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ErrorResponse> treatAcessDeniedException(AccessDeniedException ex){
+        String message = ex.getMessage();
+
         ErrorResponse error = new ErrorResponse(
                 HttpStatus.FORBIDDEN.value(),
-                "Acesso negado",
+                message,
                 LocalDateTime.now()
         );
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
@@ -96,9 +106,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ErrorResponse> treatDataIntegrityViolationException(DataIntegrityViolationException ex){
+        String message = ex.getMessage();
+
         ErrorResponse error = new ErrorResponse(
-                HttpStatus.CONTINUE.value(),
-                "Endereço de email já está cadastrado",
+                HttpStatus.CONFLICT.value(),
+                message,
                 LocalDateTime.now()
         );
         return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
