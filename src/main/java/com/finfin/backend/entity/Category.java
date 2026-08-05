@@ -1,6 +1,7 @@
 package com.finfin.backend.entity;
 
 import com.finfin.backend.entity.enums.TransactionType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumeratedValue;
 import jakarta.persistence.GeneratedValue;
@@ -20,11 +21,12 @@ public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "column_id")
     private Long id;
 
     @ManyToOne
     @NotBlank
-    @JoinColumn(name = "id_user")
+    @JoinColumn(name = "user_id")
     private User owner;
 
     @NotBlank(message ="{category.name.needed}")
