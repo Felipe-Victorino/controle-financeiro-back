@@ -6,9 +6,8 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-@AllArgsConstructor
 public class LoginDTOResponse {
-    //private JpaToken accessToken
+    //private JpaToken accessToken;
     //private TokenType;
-    LocalDateTime expiresIn;
+    LocalDateTime expiresIn = LocalDateTime.now().plusHours(3);
 }
