@@ -1,6 +1,7 @@
 package com.finfin.backend.entity;
 
 import com.finfin.backend.entity.enums.TransactionType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumeratedValue;
 import jakarta.persistence.GeneratedValue;
@@ -28,20 +29,21 @@ import java.time.LocalDateTime;
 public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "transaction_id")
     private Long id;
 
     @ManyToOne
     @NotBlank(message = "{transaction.wallet.needed}")
-    @JoinColumn(name = "id_wallet")
+    @JoinColumn(name = "wallet_id")
     private Wallet wallet;
 
     @ManyToOne
-    @JoinColumn(name = "id_category")
+    @JoinColumn(name = "category_id")
     private Category category;
 
     @ManyToOne
     @NotBlank(message = "{transaction.createdBy.needed}")
-    @JoinColumn(name = "id_user")
+    @JoinColumn(name = "user_id")
     private User createdBy;
 
     @EnumeratedValue
