@@ -1,6 +1,7 @@
 package com.finfin.backend.entity;
 
 import com.finfin.backend.entity.enums.RoleWallet;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumeratedValue;
 import jakarta.persistence.GeneratedValue;
@@ -20,16 +21,17 @@ import java.time.LocalDateTime;
 public class WalletMember {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "wallet_member_id")
     private Long id;
 
     @ManyToOne
     @NotBlank
-    @JoinColumn(name = "id_wallet")
+    @JoinColumn(name = "wallet_id")
     private Wallet wallet;
 
     @ManyToOne
     @NotBlank
-    @JoinColumn(name = "id_user")
+    @JoinColumn(name = "user_id")
     private User user;
 
     @NotBlank
