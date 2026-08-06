@@ -13,15 +13,18 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class RegisterDTOResponse {
 
+
     private long id;
 
-    @NotBlank(message = "Name is required")
+    @NotBlank(message = "{user.name.needed}")
     @Size(min=2, max=100)
     private String name;
 
-    @Email(message = "Email is required")
+    @NotBlank
+    @Email(message = "{user.email.needed}")
     private String email;
 
+    @NotBlank
     @FutureOrPresent
     private LocalDateTime createdAt;
 }

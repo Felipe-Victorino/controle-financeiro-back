@@ -8,16 +8,19 @@ import lombok.Data;
 
 @Data
 public class RegisterDTORequest {
-    @NotBlank(message = "Name is required")
-    @Size(min=2, max=100)
+    @NotBlank(message = "{user.name.needed}")
+    @Size(min=2, max=64)
     private String name;
 
-    @Email(message = "Email is required")
+    @Email(message = "Email deve ser um endereço válido")
+    @NotBlank(message = "{user.email.needed}")
     private String email;
 
-    @NotBlank(message = "Password is required")
+    @NotBlank(message = "{user.passwd.needed}")
+    @Size(min = 8)
     private String passwd;
 
-    @NotBlank(message= "Password confirmation is required")
+    @NotBlank(message= "{user.passwdConfirm.needed}")
+    @Size(min = 8)
     private String passwdConfirm;
 }
