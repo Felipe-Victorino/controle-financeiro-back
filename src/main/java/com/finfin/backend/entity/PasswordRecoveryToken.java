@@ -8,6 +8,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
+import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 
@@ -27,9 +29,14 @@ public class PasswordRecoveryToken {
     @JoinColumn(name = "user_id")
     private User user;
 
-    private UUID token;
+    @org.hibernate.validator.constraints.UUID
+    private UUID token = UUID.randomUUID();
 
+    @Future(message = "Token inválido")
     private LocalDateTime expirationTime = LocalDateTime.now().plusHours(1);
 
     private boolean isUsed = false;
+
+
+
 }

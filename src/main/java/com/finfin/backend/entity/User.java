@@ -32,7 +32,8 @@ public class User {
     @Email(message = "{user.email.needed}")
     @Column(unique = true)
     private String email;
-    
+
+    @Size(min = 0, max = 256)
     private String address;
 
     @NotBlank(message = "{user.passwd.needed}")

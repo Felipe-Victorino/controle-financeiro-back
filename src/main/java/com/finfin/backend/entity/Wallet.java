@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
@@ -34,6 +35,7 @@ public class Wallet {
     @Size(max = 255)
     private String description;
 
+    @PastOrPresent
     private LocalDateTime createdIn = LocalDateTime.now();
 
     @OneToMany(mappedBy = "wallet")

@@ -25,7 +25,7 @@ public class Category {
     private Long id;
 
     @ManyToOne
-    @NotBlank
+    @NotBlank(message = "{category.owner.needed}")
     @JoinColumn(name = "user_id")
     private User owner;
 
@@ -33,7 +33,9 @@ public class Category {
     @Size(max=80)
     private String name;
 
+
     private String color;
+
 
     private String icon;
 

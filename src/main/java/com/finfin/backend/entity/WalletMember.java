@@ -11,6 +11,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
@@ -39,5 +40,6 @@ public class WalletMember {
     @Pattern(regexp = "OWNER|EDITOR|VIEWER")
     private RoleWallet role;
 
+    @PastOrPresent
     private LocalDateTime joinedIn = LocalDateTime.now();
 }
