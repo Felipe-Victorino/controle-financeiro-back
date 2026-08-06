@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import com.finfin.backend.dto.auth.forgotpassword.ForgotDTORequest;
 import jakarta.validation.constraints.Email;
+import org.jspecify.annotations.NonNull;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +38,7 @@ public class UserService{
         return repository.findByEmail(email);
     }
 
-    public User insert (RegisterDTORequest userRequest){
+    public User insert (@NonNull RegisterDTORequest userRequest){
         TypeMap<RegisterDTORequest, User> propertyMapper = this.modelMapper.createTypeMap(RegisterDTORequest.class, User.class);
 
         //addMapping recebe uma fonte e um destino, portanto o primeiro argumento é um getter e o segundo um setter
@@ -47,26 +48,25 @@ public class UserService{
 
         repository.save(user);
 
-//        Context context = new Context();
-//        context.setVariable("name", user.getName());
-//
-//        emailSenderService.sendTemplatedEmail(
-//                user.getEmail(),
-//                "Novo registro no serviço FinFin",
-//                "successfulRegistration",
-//                context
-//        );
+        Context context = new Context();
+        context.setVariable("name", user.getName());
+
+        emailSenderService.sendTemplatedEmail(
+                user.getEmail(),
+                "Novo registro no serviço FinFin",
+                "successfulRegistration",
+                context
+        );
 
         return user;
     }
 
-    public boolean confirmPassword(String passwd, String passwdConfirm){
+    public boolean confirmPassword(@NonNull String passwd, String passwdConfirm){
         return passwd.equals(passwdConfirm);
     }
 
 
-
-    public User update(User user){
+    public User update(@NonNull User user){
         User userdb = findById(user.getId());
         userdb.setAddress(user.getAddress());
         userdb.setName(user.getName());
@@ -74,21 +74,21 @@ public class UserService{
         return repository.save(userdb);
     }
 
-    public User updateEmail(User user){
+    public User updateEmail(@NonNull User user){
         User userdb = findById(user.getId());
         userdb.setEmail(user.getEmail());
         userdb.setUpdatedIn(LocalDateTime.now());
         return repository.save(userdb);
     }
 
-    public User updateHashedPassword(User user){
+    public User updateHashedPassword(@NonNull User user){
         User userdb = findById(user.getId());
         userdb.setHashedPassword(user.getHashedPassword());
         userdb.setUpdatedIn(LocalDateTime.now());
         return repository.save(userdb);
     }
 
-    public void delete(Long id) {
+    public void delete(@NonNull Long id) {
         User user = findById(id);
         repository.delete(user);
     }

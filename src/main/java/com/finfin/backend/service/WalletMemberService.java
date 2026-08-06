@@ -2,6 +2,7 @@ package com.finfin.backend.service;
 
 import com.finfin.backend.entity.WalletMember;
 import com.finfin.backend.repository.WalletMemberRepository;
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,16 +19,16 @@ public class WalletMemberService {
     }
 
 
-    public WalletMember insert(WalletMember wm) {
+    public WalletMember insert(@NonNull WalletMember wm) {
         return repository.save(wm);
     }
 
 
-    public void delete(Long id) {
+    public void delete(@NonNull Long id) {
         repository.delete(findById(id));
     }
 
-    public WalletMember update(WalletMember wm) {
+    public WalletMember update(@NonNull WalletMember wm) {
         WalletMember wmdb = findById(wm.getId());
         wmdb.setRole(wm.getRole());
         wmdb.setWallet(wmdb.getWallet());

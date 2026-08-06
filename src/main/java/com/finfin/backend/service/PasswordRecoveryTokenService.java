@@ -3,6 +3,7 @@ package com.finfin.backend.service;
 import com.finfin.backend.entity.PasswordRecoveryToken;
 import com.finfin.backend.entity.User;
 import com.finfin.backend.repository.PasswordRecoveryTokenRepository;
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
@@ -22,18 +23,18 @@ public class PasswordRecoveryTokenService{
         return repository.findById(id).orElseThrow(()-> new RuntimeException("{rectoken.notfound}"));
     }
 
-    public PasswordRecoveryToken findByToken(UUID token){
+    public PasswordRecoveryToken findByToken(@NonNull UUID token){
         return repository.findByToken(token);
     }
 
-    public PasswordRecoveryToken insert(PasswordRecoveryToken passwordRecoveryToken) {
+    public PasswordRecoveryToken insert(@NonNull PasswordRecoveryToken passwordRecoveryToken) {
         return repository.save(passwordRecoveryToken);
     }
 
-    public PasswordRecoveryToken createNew(User user){
+    public PasswordRecoveryToken createNew(@NonNull User user){
         PasswordRecoveryToken prt = new PasswordRecoveryToken();
-        prt.setToken(UUID.randomUUID());
         prt.setUser(user);
+
         insert(prt);
         System.out.println(prt.getToken());
 
@@ -57,7 +58,7 @@ public class PasswordRecoveryTokenService{
     }
 
 
-    public PasswordRecoveryToken update(PasswordRecoveryToken passwordRecoveryToken) {
+    public PasswordRecoveryToken update(@NonNull PasswordRecoveryToken passwordRecoveryToken) {
         PasswordRecoveryToken prtdb = findById(passwordRecoveryToken.getId());
         prtdb.setToken(passwordRecoveryToken.getToken());
         prtdb.setUser(passwordRecoveryToken.getUser());
@@ -67,25 +68,25 @@ public class PasswordRecoveryTokenService{
         return repository.save(prtdb);
     }
 
-    public PasswordRecoveryToken updateUser(PasswordRecoveryToken prt){
+    public PasswordRecoveryToken updateUser(@NonNull PasswordRecoveryToken prt){
         PasswordRecoveryToken prtdb = findById(prt.getId());
         prtdb.setToken(prt.getToken());
         return repository.save(prtdb);
     }
 
-    public PasswordRecoveryToken updateToken(PasswordRecoveryToken prt){
+    public PasswordRecoveryToken updateToken(@NonNull PasswordRecoveryToken prt){
         PasswordRecoveryToken prtdb = findById(prt.getId());
         prtdb.setToken(prt.getToken());
         return repository.save(prtdb);
     }
 
-    public PasswordRecoveryToken updateExpirationTime(PasswordRecoveryToken prt){
+    public PasswordRecoveryToken updateExpirationTime(@NonNull PasswordRecoveryToken prt){
         PasswordRecoveryToken prtdb = findById(prt.getId());
         prtdb.setExpirationTime(prt.getExpirationTime());
         return repository.save(prtdb);
     }
 
-    public PasswordRecoveryToken updateUsed(PasswordRecoveryToken prt){
+    public PasswordRecoveryToken updateUsed(@NonNull PasswordRecoveryToken prt){
         PasswordRecoveryToken prtdb = findById((prt.getId()));
         prtdb.setUsed(prt.isUsed());
         return repository.save(prtdb);
