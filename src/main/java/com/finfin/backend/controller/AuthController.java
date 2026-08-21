@@ -2,6 +2,7 @@ package com.finfin.backend.controller;
 
 import com.finfin.backend.dto.auth.forgotpassword.ForgotDTORequest;
 import com.finfin.backend.dto.auth.forgotpassword.ForgotDTOResponse;
+import com.finfin.backend.dto.auth.login.LoginDTORequest;
 import com.finfin.backend.dto.auth.login.LoginDTOResponse;
 import com.finfin.backend.dto.auth.register.RegisterDTORequest;
 import com.finfin.backend.dto.auth.register.RegisterDTOResponse;
@@ -10,7 +11,6 @@ import com.finfin.backend.dto.auth.resetpassword.ResetDTOResponse;
 import com.finfin.backend.entity.PasswordRecoveryToken;
 import com.finfin.backend.entity.User;
 import com.finfin.backend.exception.ResourceNotFoundException;
-import com.finfin.backend.service.EmailSenderService;
 import com.finfin.backend.service.PasswordRecoveryTokenService;
 import com.finfin.backend.service.UserService;
 import jakarta.validation.Valid;
@@ -24,11 +24,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin(origins = "localhost:5173")
+@CrossOrigin
 public class AuthController {
 
     @Autowired
@@ -65,8 +66,8 @@ public class AuthController {
         PasswordRecoveryToken prt = passwordRecoveryTokenService.createNew(user);
 
         ForgotDTOResponse response = new ForgotDTOResponse(
-                "Token will expire in one hour",
-                prt.getToken().toString()
+                "Token irá expirar em uma hora",
+                prt.getToken()
         );
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -76,16 +77,26 @@ public class AuthController {
     public ResponseEntity<ResetDTOResponse> resetPassword(@RequestBody @Valid ResetDTORequest request){
 
         PasswordRecoveryToken pwt = passwordRecoveryTokenService.findByToken(UUID.fromString(request.getToken()));
+
+        if (LocalDateTime.now().isAfter(pwt.getExpirationTime())){
+            ResetDTOResponse response = new ResetDTOResponse("Token expirado");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+        }
+
         User user = pwt.getUser();
+        if(user == null){
+            ResetDTOResponse response = new ResetDTOResponse("Token inválido");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+        }
 
         if(pwt.isUsed()){
 
             ResetDTOResponse response = new ResetDTOResponse("Token já utilizado");
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
 
-        } else if(userService.confirmPassword(request.getPasswd(), request.getNewPasswd())){
+        } else if(userService.confirmPassword(request.getNewPasswd(), request.getConfirmPasswd())){
 
-            user.setHashedPassword(request.getPasswd());
+            user.setHashedPassword(request.getNewPasswd());
             pwt.setUsed(true);
             userService.updateHashedPassword(user);
 
@@ -97,9 +108,14 @@ public class AuthController {
     }
 
     @PostMapping("login")
-    public ResponseEntity<LoginDTOResponse> login(@RequestBody @Valid RegisterDTORequest user){
+    public ResponseEntity<LoginDTOResponse> login(@RequestBody @Valid LoginDTORequest request){
+        User user = userService.findByEmail(request.getEmail());
+        if(user == null){
+            throw new ResourceNotFoundException("Usuário não encontrado");
+        }
 
         LoginDTOResponse response = new LoginDTOResponse();
+
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
