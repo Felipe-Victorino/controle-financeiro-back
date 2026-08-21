@@ -16,9 +16,9 @@ public class ResetDTORequest {
 
     @NotBlank(message = "{user.passwd.needed}")
     @Size(min = 8)
-    private String passwd;
+    private String newPasswd;
 
     @NotBlank(message = "{user.passwd.needed}")
     @Size(min = 8)
-    private String passwdConfirm;
+    private String confirmPasswd;
 }
