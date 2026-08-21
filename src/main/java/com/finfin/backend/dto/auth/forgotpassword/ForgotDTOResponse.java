@@ -3,7 +3,7 @@ package com.finfin.backend.dto.auth.forgotpassword;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.hibernate.validator.constraints.UUID;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -13,6 +13,5 @@ public class ForgotDTOResponse {
     private String message;
 
     @NotBlank
-    @UUID
-    private String token;
+    private UUID token;
 }
