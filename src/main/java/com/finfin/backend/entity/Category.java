@@ -33,7 +33,11 @@ public class Category {
     @Size(max=80)
     private String name;
 
-
+    @Pattern(
+            //traduzindo: ou um valor formatado desse jeito -> #FFF ou desse outro -> #FF00FF
+            regexp = "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$",
+            message = "Valor deve ser uma cor válida"
+    )
     private String color;
 
 
