@@ -22,7 +22,7 @@ https://github.com/Felipe-Victorino/controle-financeiro-front
 
 Para incializar esse projeto, digite no seu terminal de comandos de preferência esse comando:
 
-To run this project, make sure you're at the porject root and type this command on your terminal of choice:
+To run this project, make sure you're at the project root and type this command on your terminal of choice:
 
 ```
 ./mvnw clean install
@@ -43,5 +43,5 @@ A página OpenAPI/Swagger está localizada em:
 The OpenAPI/Swagger page is localized in:
 
 ```
-localhost:8080/api/v3/swagget-ui.html
+http://localhost:8080/api/v1/swagger-ui/index.html
 ```
