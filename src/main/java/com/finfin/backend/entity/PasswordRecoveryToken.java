@@ -29,11 +29,10 @@ public class PasswordRecoveryToken {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @org.hibernate.validator.constraints.UUID
     private UUID token = UUID.randomUUID();
 
     @Future(message = "Token inválido")
-    private LocalDateTime expirationTime = LocalDateTime.now().plusHours(1);
+    private LocalDateTime expirationTime = LocalDateTime.now().plusMinutes(15);
 
     private boolean isUsed = false;
 
