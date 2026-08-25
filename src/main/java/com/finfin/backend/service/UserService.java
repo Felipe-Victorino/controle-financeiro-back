@@ -2,9 +2,7 @@ package com.finfin.backend.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
-import com.finfin.backend.dto.auth.forgotpassword.ForgotDTORequest;
 import jakarta.validation.constraints.Email;
 import org.jspecify.annotations.NonNull;
 import org.modelmapper.ModelMapper;
@@ -27,7 +25,7 @@ public class UserService{
     private EmailSenderService emailSenderService;
 
     @Autowired
-    private ModelMapper modelMapper;
+    private ModelMapper mapper;
 
 
     public User findById(Long id) {
@@ -39,12 +37,12 @@ public class UserService{
     }
 
     public User insert (@NonNull RegisterDTORequest userRequest){
-        TypeMap<RegisterDTORequest, User> propertyMapper = this.modelMapper.createTypeMap(RegisterDTORequest.class, User.class);
+        TypeMap<RegisterDTORequest, User> propertyMapper = this.mapper.createTypeMap(RegisterDTORequest.class, User.class);
 
         //addMapping recebe uma fonte e um destino, portanto o primeiro argumento é um getter e o segundo um setter
 
         propertyMapper.addMapping(RegisterDTORequest::getPasswd, User::setHashedPassword);
-        User user = this.modelMapper.map(userRequest, User.class);
+        User user = this.mapper.map(userRequest, User.class);
 
         repository.save(user);
 
