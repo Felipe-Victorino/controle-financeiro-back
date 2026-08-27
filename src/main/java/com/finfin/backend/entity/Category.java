@@ -48,6 +48,6 @@ public class Category {
     @Pattern(regexp = "RECEIPT|EXPENSE")
     private TransactionType type;
 
-    private boolean isActive;
+    private boolean isActive = true;
 
 }
