@@ -14,6 +14,7 @@ import com.finfin.backend.exception.ResourceNotFoundException;
 import com.finfin.backend.service.PasswordRecoveryTokenService;
 import com.finfin.backend.service.UserService;
 import jakarta.validation.Valid;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,13 +39,14 @@ public class AuthController {
     @Autowired
     PasswordRecoveryTokenService passwordRecoveryTokenService;
 
-    @GetMapping()
-    public String defaultMessage(){return "Authentication";}
+    @Autowired
+    private ModelMapper mapper;
 
     @PostMapping("register")
-    public ResponseEntity<RegisterDTOResponse> register(@RequestBody @Valid RegisterDTORequest user){
+    public ResponseEntity<RegisterDTOResponse> register(@RequestBody @Valid RegisterDTORequest request){
 
-        User userdb = userService.insert(user);
+
+        User userdb = userService.insert(this.mapper.map(request, User.class));
 
         RegisterDTOResponse response = new RegisterDTOResponse(
                 userdb.getId(),
@@ -115,6 +117,7 @@ public class AuthController {
         }
 
         LoginDTOResponse response = new LoginDTOResponse();
+        response.setName(user.getName());
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
