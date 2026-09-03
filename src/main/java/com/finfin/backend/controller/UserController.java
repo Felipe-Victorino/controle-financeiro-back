@@ -1,6 +1,8 @@
 package com.finfin.backend.controller;
 
 
+import com.finfin.backend.dto.UserDTOResponse;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,14 +28,15 @@ public class UserController {
     @Autowired
     private UserService service;
 
+    @Autowired
+    private ModelMapper mapper;
+
     @PostMapping
-    public ResponseEntity<User> register(@RequestBody @Valid RegisterDTORequest user){
-        User userdb = service.insert(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(userdb);
+    public ResponseEntity<UserDTOResponse> register(@RequestBody @Valid RegisterDTORequest request){
+        User userdb = service.insert(this.mapper.map(request, User.class));
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(this.mapper.map(userdb, UserDTOResponse.class));
     }
 
-    @GetMapping()
-    public String defaultMessage(){return "User Controller";}
-    
   
 }
