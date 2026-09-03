@@ -24,11 +24,7 @@ public class UserService{
     @Autowired
     private EmailSenderService emailSenderService;
 
-    @Autowired
-    private ModelMapper mapper;
-
-
-    public User findById(Long id) {
+    public User findById(@NonNull Long id) {
         return repository.findById(id).orElseThrow(()->new RuntimeException("{user.notfound}"));
     }
 
@@ -36,13 +32,11 @@ public class UserService{
         return repository.findByEmail(email);
     }
 
-    public User insert (@NonNull RegisterDTORequest userRequest){
-        TypeMap<RegisterDTORequest, User> propertyMapper = this.mapper.createTypeMap(RegisterDTORequest.class, User.class);
+    public User insert (@NonNull User user){
+
 
         //addMapping recebe uma fonte e um destino, portanto o primeiro argumento é um getter e o segundo um setter
 
-        propertyMapper.addMapping(RegisterDTORequest::getPasswd, User::setHashedPassword);
-        User user = this.mapper.map(userRequest, User.class);
 
         repository.save(user);
 
