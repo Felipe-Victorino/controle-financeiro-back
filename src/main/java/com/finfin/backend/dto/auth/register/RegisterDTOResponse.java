@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class RegisterDTOResponse {
 
 
-    private long id;
+    private Long id;
 
     @NotBlank(message = "{user.name.needed}")
     @Size(min=2, max=100)
@@ -26,5 +26,5 @@ public class RegisterDTOResponse {
 
     @NotBlank
     @FutureOrPresent
-    private LocalDateTime createdAt;
+    private LocalDateTime createdIn;
 }
