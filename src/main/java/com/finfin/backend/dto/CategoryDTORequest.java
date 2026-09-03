@@ -10,8 +10,12 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class CreateCategoryDTORequest {
-    private Long owner_id;
+public class CategoryDTORequest {
+
+    Long id;
+
+    @NotBlank
+    private Long ownerId;
 
     @NotBlank(message ="{category.name.needed}")
     @Size(max=80)
