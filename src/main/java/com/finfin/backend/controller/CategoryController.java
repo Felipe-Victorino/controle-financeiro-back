@@ -24,7 +24,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/category")
 @CrossOrigin
-public class CategoryController {
+public class CategoryController implements CrudController<CategoryDTORequest, Long, CategoryDTOResponse>{
 
     @Autowired
     CategoryService service;
@@ -32,10 +32,10 @@ public class CategoryController {
     @Autowired
     ModelMapper mapper;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<List<CategoryDTOResponse>> getAllFromUser(@PathVariable Long id){
+    @GetMapping("/{userid}")
+    public ResponseEntity<List<CategoryDTOResponse>> getAll(@PathVariable Long userid){
 
-        List<Category> categoryList = service.listAllByOwner(id);
+        List<Category> categoryList = service.listAllByOwner(userid);
 
         List<CategoryDTOResponse> response = categoryList.stream()
                 .map(category -> mapper.map(category, CategoryDTOResponse.class))
@@ -44,8 +44,16 @@ public class CategoryController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping()
+    public ResponseEntity<CategoryDTOResponse> get(@PathVariable Long id){
+        Category catdb = service.findById(id);
+        CategoryDTOResponse response = mapper.map(catdb, CategoryDTOResponse.class);
+
+        return ResponseEntity.ok(response);
+    }
+
     @PostMapping("/")
-    public ResponseEntity<CategoryDTOResponse> createNewCategory(@RequestBody @Valid CategoryDTORequest request){
+    public ResponseEntity<CategoryDTOResponse> create(@RequestBody @Valid CategoryDTORequest request){
 
         Category cat = service.insert(this.mapper.map(request, Category.class));
 
@@ -54,7 +62,7 @@ public class CategoryController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteCategory(@PathVariable Long id){
+    public ResponseEntity<String> delete(@PathVariable Long id){
 
         service.delete(id);
 
@@ -62,7 +70,7 @@ public class CategoryController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CategoryDTOResponse> updateCategory(
+    public ResponseEntity<CategoryDTOResponse> update(
             @PathVariable Long id,
             @RequestBody @Valid CategoryDTORequest request
     ){
