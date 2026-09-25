@@ -1,7 +1,7 @@
 package com.finfin.backend.controller;
 
-import com.finfin.backend.dto.CategoryDTORequest;
-import com.finfin.backend.dto.CategoryDTOResponse;
+import com.finfin.backend.dto.app.category.CategoryDTORequest;
+import com.finfin.backend.dto.app.category.CategoryDTOResponse;
 import com.finfin.backend.entity.Category;
 import com.finfin.backend.service.CategoryService;
 import jakarta.validation.Valid;

@@ -1,10 +1,8 @@
 package com.finfin.backend.service;
 
-import com.finfin.backend.dto.CategoryDTOResponse;
 import com.finfin.backend.entity.Category;
 import com.finfin.backend.repository.CategoryRepository;
 import org.jspecify.annotations.NonNull;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

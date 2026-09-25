@@ -1,4 +1,4 @@
-package com.finfin.backend.dto;
+package com.finfin.backend.dto.app.category;
 
 import com.finfin.backend.entity.enums.TransactionType;
 import jakarta.persistence.EnumeratedValue;
@@ -10,17 +10,13 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class CategoryDTORequest {
+public class CategoryDTOResponse {
 
-    Long id;
-
-    @NotBlank
-    private Long ownerId;
+    private Long id;
 
     @NotBlank(message ="{category.name.needed}")
     @Size(max=80)
     private String name;
-
 
     @Pattern(
             //traduzindo: ou um valor formatado desse jeito -> #FFF ou desse outro -> #FF00FF
@@ -36,4 +32,6 @@ public class CategoryDTORequest {
     @EnumeratedValue
     @Pattern(regexp = "RECEIPT|EXPENSE")
     private TransactionType type;
+
+    private boolean isActive;
 }

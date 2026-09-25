@@ -1,14 +1,11 @@
 package com.finfin.backend.service;
-import com.finfin.backend.dto.CategoryDTOResponse;
 import com.finfin.backend.entity.Transaction;
 import com.finfin.backend.entity.User;
-import com.finfin.backend.entity.WalletMember;
 import org.modelmapper.Converter;
 import com.finfin.backend.entity.Category;
 
 import org.modelmapper.spi.MappingContext;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 @Service
