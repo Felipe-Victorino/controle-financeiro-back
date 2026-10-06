@@ -31,6 +31,18 @@ public class ConverterService {
         }
     };
 
+    public Converter<User, String> userToNameConverter = new Converter<>() {
+
+        @Override
+        public String convert(MappingContext<User, String> context) {
+            if (context.getSource() == null) {
+                return "";
+            }
+
+            return context.getSource().getName();
+        }
+    };
+
     public Converter<Long, Transaction> idToTransactionConverter = new Converter<>() {
         @Override
         public Transaction convert(MappingContext<Long, Transaction> context) {
