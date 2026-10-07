@@ -2,9 +2,11 @@ package com.finfin.backend.config;
 
 import com.finfin.backend.dto.app.category.CategoryDTOResponse;
 import com.finfin.backend.dto.app.category.CategoryDTORequest;
+import com.finfin.backend.dto.app.wallet.WalletDTORequest;
 import com.finfin.backend.dto.auth.register.RegisterDTORequest;
 import com.finfin.backend.entity.Category;
 import com.finfin.backend.entity.User;
+import com.finfin.backend.entity.Wallet;
 import com.finfin.backend.service.ConverterService;
 import org.modelmapper.ModelMapper;
 
@@ -35,14 +37,22 @@ public class ModelMapperConfig {
                 .addMappings(
                         mapper -> mapper
                                 .using(converter.idToCategoryConverter)
-                                .map(CategoryDTORequest::getOwnerId, Category::setOwner));
+                                .map(CategoryDTORequest::getOwnerId, Category::setOwner)
+                );
 
 
         //Categoria com DTO de resposta
         modelMapper.createTypeMap(Category.class, CategoryDTOResponse.class);
 
         modelMapper.createTypeMap(RegisterDTORequest.class, User.class)
-                .addMapping(RegisterDTORequest::getPasswd, User::setHashedPassword);;
+                .addMapping(RegisterDTORequest::getPasswd, User::setHashedPassword);
+
+        modelMapper.createTypeMap(Wallet.class, WalletDTORequest.class)
+                .addMappings(mapper -> mapper
+                        .using(converter.userToNameConverter)
+                        .map(Wallet::getOwner, WalletDTORequest::setOwner)
+                );
+
 
         return modelMapper;
     }
