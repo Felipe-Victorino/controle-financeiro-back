@@ -22,7 +22,7 @@ public class Profile {
 
     private String description;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,
+    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL,
             orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<UserProfile> userProfiles = new HashSet<>();
 }
