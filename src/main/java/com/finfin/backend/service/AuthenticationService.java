@@ -51,11 +51,11 @@ public class AuthenticationService {
         refreshTokenService.revoke(refreshTokenRecebido);
     }
 
-    private AuthenticationResultDTO buildResult(User u, String username, RefreshToken rt) {
+    private AuthenticationResultDTO buildResult(User u, String email, RefreshToken rt) {
         UserAuthDTO dto = new UserAuthDTO();
         dto.setEmail(u.getEmail());
-        dto.setName(u.getEmail());
-        dto.setToken(jwtService.generateToken(username));
+        dto.setName(u.getName());
+        dto.setToken(jwtService.generateToken(email));
         return new AuthenticationResultDTO(dto, rt.getToken());
     }
 }
