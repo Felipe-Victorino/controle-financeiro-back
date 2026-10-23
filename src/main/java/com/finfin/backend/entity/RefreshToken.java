@@ -10,9 +10,10 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
-@Entity
 @Data
+@Entity(name = "refresh_token")
 public class RefreshToken {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
