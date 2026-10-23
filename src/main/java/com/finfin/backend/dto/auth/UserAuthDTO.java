@@ -1,16 +1,24 @@
 package com.finfin.backend.dto.auth;
 
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Future;
 import lombok.Data;
+
+import java.time.LocalDateTime;
 
 @Data
 public class UserAuthDTO {
+
     private String name;
+
+    @Email
     private String email;
+
     private String token; // access token
 
-    public void setName(@Email(message = "{user.email.needed}") String email) {
-    }
+    @Future
+    LocalDateTime expiresIn = LocalDateTime.now().plusHours(3);
+
 }
 
 
