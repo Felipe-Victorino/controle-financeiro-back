@@ -4,11 +4,9 @@ import com.finfin.backend.dto.app.user.UserRequestDTO;
 import com.finfin.backend.dto.auth.AuthenticationResultDTO;
 import com.finfin.backend.dto.auth.UserAuthDTO;
 import com.finfin.backend.dto.auth.forgotpassword.ForgotDTORequest;
-import com.finfin.backend.dto.auth.forgotpassword.ForgotDTOResponse;
 import com.finfin.backend.dto.auth.register.RegisterDTORequest;
 import com.finfin.backend.dto.auth.register.RegisterDTOResponse;
 import com.finfin.backend.dto.auth.resetpassword.ResetDTORequest;
-import com.finfin.backend.dto.auth.resetpassword.ResetDTOResponse;
 import com.finfin.backend.entity.PasswordRecoveryToken;
 import com.finfin.backend.entity.User;
 import com.finfin.backend.exception.ResourceNotFoundException;
@@ -56,11 +54,13 @@ public class AuthenticationController {
     private long refreshExpiration;
 
     @PostMapping("/login")
-    public ResponseEntity<UserAuthDTO> login(@RequestBody UserRequestDTO usuario,
-                                             HttpServletResponse response) {
-        AuthenticationResultDTO resultado = authenticationService.authenticate(usuario);
-        adicionarCookieRefreshToken(response, resultado.refreshToken());
-        return ResponseEntity.ok(resultado.data());
+    public ResponseEntity<UserAuthDTO> login(
+            @RequestBody UserRequestDTO user,
+            HttpServletResponse response
+    ) {
+        AuthenticationResultDTO result = authenticationService.authenticate(user);
+        addCookieRefreshToken(response, result.refreshToken());
+        return ResponseEntity.ok(result.data());
     }
 
     @PostMapping("/refresh")
@@ -72,10 +72,10 @@ public class AuthenticationController {
         }
         try {
             AuthenticationResultDTO resultado = authenticationService.renew(refreshToken);
-            adicionarCookieRefreshToken(response, resultado.refreshToken());
+            addCookieRefreshToken(response, resultado.refreshToken());
             return ResponseEntity.ok(resultado.data());
         } catch (RuntimeException ex) {
-            removerCookieRefreshToken(response);
+            removeCookieRefreshToken(response);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
@@ -87,11 +87,11 @@ public class AuthenticationController {
         if (refreshToken != null) {
             authenticationService.logout(refreshToken);
         }
-        removerCookieRefreshToken(response);
+        removeCookieRefreshToken(response);
         return ResponseEntity.noContent().build();
     }
 
-    private void adicionarCookieRefreshToken(HttpServletResponse response, String refreshToken) {
+    private void addCookieRefreshToken(HttpServletResponse response, String refreshToken) {
         ResponseCookie cookie = ResponseCookie.from(COOKIE_REFRESH_TOKEN, refreshToken)
                 .httpOnly(true)
                 .secure(false) // true em produção, com HTTPS
@@ -102,7 +102,7 @@ public class AuthenticationController {
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
     }
 
-    private void removerCookieRefreshToken(HttpServletResponse response) {
+    private void removeCookieRefreshToken(HttpServletResponse response) {
         ResponseCookie cookie = ResponseCookie.from(COOKIE_REFRESH_TOKEN, "")
                 .httpOnly(true).secure(false).sameSite("Lax")
                 .path("/auth")
@@ -114,7 +114,6 @@ public class AuthenticationController {
 
     @PostMapping("register")
     public ResponseEntity<RegisterDTOResponse> register(@RequestBody @Valid RegisterDTORequest request){
-
 
         User userdb = userService.insert(this.mapper.map(request, User.class));
 
@@ -129,7 +128,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("forgot-password")
-    public ResponseEntity<ForgotDTOResponse> forgotPassword(@RequestBody @Valid ForgotDTORequest request){
+    public ResponseEntity<String> forgotPassword(@RequestBody @Valid ForgotDTORequest request){
 
         User user = userService.findByEmail(request.getEmail());
         if(user == null) {
@@ -137,33 +136,30 @@ public class AuthenticationController {
         }
         PasswordRecoveryToken prt = passwordRecoveryTokenService.createNew(user);
 
-        ForgotDTOResponse response = new ForgotDTOResponse(
-                "Token irá expirar em uma hora",
-                prt.getToken()
-        );
+        String response = "Token irá expirar em uma hora";
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @PostMapping("reset-password")
-    public ResponseEntity<ResetDTOResponse> resetPassword(@RequestBody @Valid ResetDTORequest request){
+    public ResponseEntity<String> resetPassword(@RequestBody @Valid ResetDTORequest request){
 
         PasswordRecoveryToken pwt = passwordRecoveryTokenService.findByToken(UUID.fromString(request.getToken()));
 
         if (LocalDateTime.now().isAfter(pwt.getExpirationTime())){
-            ResetDTOResponse response = new ResetDTOResponse("Token expirado");
+           String response = "Token expirado";
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
         }
 
         User user = pwt.getUser();
         if(user == null){
-            ResetDTOResponse response = new ResetDTOResponse("Token inválido");
+            String response = "Token inválido";
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
         }
 
         if(pwt.isUsed()){
 
-            ResetDTOResponse response = new ResetDTOResponse("Token já utilizado");
+            String response = "Token já utilizado";
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
 
         } else if(userService.confirmPassword(request.getNewPasswd(), request.getConfirmPasswd())){
@@ -172,7 +168,7 @@ public class AuthenticationController {
             pwt.setUsed(true);
             userService.updateHashedPassword(user);
 
-            ResetDTOResponse response = new ResetDTOResponse("Senha modificada com sucesso");
+            String response = "Senha modificada com sucesso";
             return ResponseEntity.status(HttpStatus.OK).body(response);
         }
 
