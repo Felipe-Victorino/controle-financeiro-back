@@ -12,6 +12,4 @@ public class ForgotDTOResponse {
     @NotBlank
     private String message;
 
-    @NotBlank
-    private UUID token;
 }
