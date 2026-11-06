@@ -1,6 +1,5 @@
 package com.finfin.backend.security;
 
-import com.finfin.backend.service.JwtService;
 import com.finfin.backend.service.UserService;
 import io.jsonwebtoken.io.IOException;
 import jakarta.servlet.FilterChain;
