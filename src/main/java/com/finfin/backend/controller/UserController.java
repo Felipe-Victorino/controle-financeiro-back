@@ -1,7 +1,7 @@
 package com.finfin.backend.controller;
 
 
-import com.finfin.backend.dto.app.UserDTOResponse;
+import com.finfin.backend.dto.app.user.UserDTOResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

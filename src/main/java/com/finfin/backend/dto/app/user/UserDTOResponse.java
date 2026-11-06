@@ -2,6 +2,8 @@ package com.finfin.backend.dto.app.user;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -9,15 +11,19 @@ import java.time.LocalDateTime;
 @Data
 public class UserDTOResponse {
 
-    @NotBlank
+    private Long id;
+
+    @NotBlank(message = "{user.name.needed}")
+    @Size(min=2, max=100)
     private String name;
 
     @NotBlank
-    @Email
+    @Email(message = "{user.email.needed}")
     private String email;
 
-    private String address;
-
-    @NotBlank
+    @PastOrPresent
     private LocalDateTime createdIn;
+
+    @PastOrPresent
+    private LocalDateTime updatedIn;
 }
