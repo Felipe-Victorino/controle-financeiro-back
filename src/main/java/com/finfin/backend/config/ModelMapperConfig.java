@@ -25,21 +25,14 @@ public class ModelMapperConfig {
     ConverterService converter;
 
     @Bean
-    public ModelMapper createModelMapper(){
+    public ModelMapper createModelMapper() {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
 
-
         //addMapping recebe uma fonte e um destino, portanto o primeiro argumento é um getter e o segundo um setter
         //DTO de criar categoria com Categoria
-        modelMapper.createTypeMap(CategoryDTORequest.class, Category.class)
-                .addMappings(
-                        mapper -> mapper
-                                .using(converter.idToCategoryConverter)
-                                .map(CategoryDTORequest::getOwnerId, Category::setOwner)
-                );
-
+        modelMapper.createTypeMap(CategoryDTORequest.class, Category.class);
 
         //Categoria com DTO de resposta
         modelMapper.createTypeMap(Category.class, CategoryDTOResponse.class);
