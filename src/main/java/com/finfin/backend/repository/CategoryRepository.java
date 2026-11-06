@@ -10,5 +10,7 @@ import java.util.List;
 public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     @Query("select c from category c where c.owner = ?1")
-    List<Category> getCategoriesByOwner(Long id);
+    List<Category> getCategoriesByOwnerId(Long id);
+    List<Category> getCategoriesByOwner(User owner);
+
 }

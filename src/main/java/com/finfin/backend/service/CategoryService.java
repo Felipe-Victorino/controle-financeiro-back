@@ -1,7 +1,10 @@
 package com.finfin.backend.service;
 
+import com.finfin.backend.dto.app.category.CategoryDTORequest;
 import com.finfin.backend.entity.Category;
+import com.finfin.backend.entity.User;
 import com.finfin.backend.repository.CategoryRepository;
+import jakarta.validation.constraints.Email;
 import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,11 +17,15 @@ public class CategoryService {
     @Autowired
     CategoryRepository repository;
 
+    @Autowired
+    UserService userService;
+
     public Category findById(Long id) {
         return repository.findById(id).orElseThrow(() -> new RuntimeException("{category.notfound}"));
     }
 
-    public Category insert(@NonNull Category cat) {
+    public Category insert(@NonNull String ownerEmail, Category cat) {
+        cat.setOwner(userService.findByEmail(ownerEmail));
         return repository.save(cat);
     }
 
@@ -80,13 +87,18 @@ public class CategoryService {
         updateActive(cat);
     }
 
-
     public List<Category> listAll() {
         return repository.findAll();
     }
 
     public List<Category> listAllByOwner(Long id) {
-        return repository.getCategoriesByOwner(id);
+        return repository.getCategoriesByOwnerId(id);
+    }
+
+    public List<Category> listAllByOwnerEmail(@Email String request) {
+        User user = userService.findByEmail(request);
+
+        return repository.getCategoriesByOwner(user);
     }
 }
 

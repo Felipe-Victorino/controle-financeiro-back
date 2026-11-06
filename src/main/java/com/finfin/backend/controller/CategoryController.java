@@ -9,6 +9,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +25,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/category")
 @CrossOrigin
-public class CategoryController implements CrudController<CategoryDTORequest, Long, CategoryDTOResponse>{
+public class CategoryController implements CrudController<CategoryDTORequest, Long, CategoryDTOResponse> {
 
     @Autowired
     CategoryService service;
@@ -32,37 +33,43 @@ public class CategoryController implements CrudController<CategoryDTORequest, Lo
     @Autowired
     ModelMapper mapper;
 
-    @GetMapping("/{userid}")
-    public ResponseEntity<List<CategoryDTOResponse>> getAll(@PathVariable Long userid){
+    @GetMapping("")
+    public ResponseEntity<List<CategoryDTOResponse>> getAll(Authentication auth) {
 
-        List<Category> categoryList = service.listAllByOwner(userid);
+        String ownerEmail = auth.getName();
+        List<Category> categoryList = service.listAllByOwnerEmail(ownerEmail);
 
         List<CategoryDTOResponse> response = categoryList.stream()
                 .map(category -> mapper.map(category, CategoryDTOResponse.class))
                 .toList();
 
+        if (response.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping()
-    public ResponseEntity<CategoryDTOResponse> get(@PathVariable Long id){
+    @GetMapping("/{id}")
+    public ResponseEntity<CategoryDTOResponse> get(@PathVariable Long id, Authentication auth) {
         Category catdb = service.findById(id);
         CategoryDTOResponse response = mapper.map(catdb, CategoryDTOResponse.class);
 
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/")
-    public ResponseEntity<CategoryDTOResponse> create(@RequestBody @Valid CategoryDTORequest request){
+    @PostMapping("")
+    public ResponseEntity<CategoryDTOResponse> create(@RequestBody @Valid CategoryDTORequest request, Authentication auth) {
+        String ownerEmail = auth.getName();
 
-        Category cat = service.insert(this.mapper.map(request, Category.class));
+        Category cat = service.insert(ownerEmail, this.mapper.map(request, Category.class));
 
         CategoryDTOResponse response = this.mapper.map(cat, CategoryDTOResponse.class);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable Long id){
+    public ResponseEntity<String> delete(@PathVariable Long id, Authentication auth) {
 
         service.delete(id);
 
@@ -72,9 +79,9 @@ public class CategoryController implements CrudController<CategoryDTORequest, Lo
     @PutMapping("/{id}")
     public ResponseEntity<CategoryDTOResponse> update(
             @PathVariable Long id,
-            @RequestBody @Valid CategoryDTORequest request
-    ){
-        request.setId(id);
+            @RequestBody @Valid CategoryDTORequest request,
+            Authentication auth
+    ) {
         Category cat = service.update(this.mapper.map(request, Category.class));
 
         CategoryDTOResponse response = this.mapper.map(cat, CategoryDTOResponse.class);
@@ -83,7 +90,7 @@ public class CategoryController implements CrudController<CategoryDTORequest, Lo
     }
 
     @PutMapping("/deactivate/{id}")
-    public ResponseEntity<String> deactivateCategory(@PathVariable Long id){
+    public ResponseEntity<String> deactivateCategory(@PathVariable Long id, Authentication auth) {
         Category cat = service.findById(id);
         service.deactivate(cat);
         return ResponseEntity.status(HttpStatus.OK).body("Categoria desativada");
