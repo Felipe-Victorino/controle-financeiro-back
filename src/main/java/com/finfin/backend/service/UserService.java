@@ -77,7 +77,7 @@ public class UserService implements UserDetailsService {
 
     public User updateHashedPassword(@NonNull User user) {
         User userdb = findById(user.getId());
-        userdb.setHashedPassword(user.getHashedPassword());
+        userdb.setHashedPassword(passwordEncoder.encode(user.getHashedPassword()));
         userdb.setUpdatedIn(LocalDateTime.now());
         return repository.save(userdb);
     }
