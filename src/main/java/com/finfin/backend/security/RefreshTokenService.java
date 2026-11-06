@@ -1,4 +1,4 @@
-package com.finfin.backend.service;
+package com.finfin.backend.security;
 
 import com.finfin.backend.entity.RefreshToken;
 import com.finfin.backend.entity.User;

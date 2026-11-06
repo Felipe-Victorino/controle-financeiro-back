@@ -1,4 +1,4 @@
-package com.finfin.backend.service;
+package com.finfin.backend.security;
 
 
 import io.jsonwebtoken.Claims;
