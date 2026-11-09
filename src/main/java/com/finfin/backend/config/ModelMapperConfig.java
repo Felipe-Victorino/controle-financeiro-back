@@ -18,9 +18,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ModelMapperConfig {
 
-    // Detalhado mais na classe correspondente, mas esse conversor é uma interface do modelmapper que
-    // deixa vc detalhar oq fazer em algum caso de converter tipo x pra y
-    // como se tivesse implementando um setter, mas automático
     @Autowired
     ConverterService converter;
 
@@ -32,21 +29,28 @@ public class ModelMapperConfig {
 
         //addMapping recebe uma fonte e um destino, portanto o primeiro argumento é um getter e o segundo um setter
         //DTO de criar categoria com Categoria
-        modelMapper.createTypeMap(CategoryDTORequest.class, Category.class);
+        modelMapper.createTypeMap(CategoryDTORequest.class, Category.class)
+                .addMappings(m -> {
+                    m.skip(Category::setId);
+                    m.skip(Category::setOwner);
+                    m.skip(Category::setActive);
+                });
 
         //Categoria com DTO de resposta
         modelMapper.createTypeMap(Category.class, CategoryDTOResponse.class);
 
         modelMapper.createTypeMap(RegisterDTORequest.class, User.class)
-                .addMapping(RegisterDTORequest::getPasswd, User::setHashedPassword);
+                .addMapping(RegisterDTORequest::getPasswd, User::setHashedPassword)
+                .addMappings(m -> {
+                    m.skip(User::setId);
+                    m.skip(User::setAddress);
+                    m.skip(User::setUserProfiles);
+                    m.skip(User::setCreatedIn);
+                    m.skip(User::setUpdatedIn);
+                });
 
-        modelMapper.createTypeMap(Wallet.class, WalletDTORequest.class)
-                .addMappings(mapper -> mapper
-                        .using(converter.userToNameConverter)
-                        .map(Wallet::getOwner, WalletDTORequest::setOwner)
-                );
 
-
+        modelMapper.validate();
         return modelMapper;
     }
 }
