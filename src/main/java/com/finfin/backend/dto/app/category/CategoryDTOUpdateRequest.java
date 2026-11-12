@@ -3,6 +3,7 @@ package com.finfin.backend.dto.app.category;
 import com.finfin.backend.entity.enums.TransactionType;
 import jakarta.persistence.EnumeratedValue;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
@@ -11,8 +12,8 @@ public class CategoryDTOUpdateRequest {
     @NotBlank
     private Long id;
 
-    @NotBlank(message ="{category.name.needed}")
-    @Size(max=80)
+    @NotBlank(message = "{category.name.needed}")
+    @Size(max = 80)
     private String name;
 
     @Pattern(
@@ -24,8 +25,6 @@ public class CategoryDTOUpdateRequest {
 
     private String icon;
 
-    @NotBlank
-    @EnumeratedValue
-    @Pattern(regexp = "RECEIPT|EXPENSE")
+    @NotNull
     private TransactionType type;
 }
