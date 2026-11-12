@@ -3,7 +3,9 @@ package com.finfin.backend.service;
 import com.finfin.backend.dto.app.category.CategoryDTORequest;
 import com.finfin.backend.entity.Category;
 import com.finfin.backend.entity.User;
+import com.finfin.backend.exception.AccessDeniedException;
 import com.finfin.backend.repository.CategoryRepository;
+import com.finfin.backend.security.UserAuthProvider;
 import jakarta.validation.constraints.Email;
 import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,16 +18,15 @@ public class CategoryService {
 
     @Autowired
     CategoryRepository repository;
-
     @Autowired
-    UserService userService;
+    UserAuthProvider authProvider;
 
     public Category findById(Long id) {
         return repository.findById(id).orElseThrow(() -> new RuntimeException("{category.notfound}"));
     }
 
-    public Category insert(@NonNull String ownerEmail, Category cat) {
-        cat.setOwner(userService.findByEmail(ownerEmail));
+    public Category insert(@NonNull Category cat) {
+        cat.setOwner(authProvider.getAuthenticatedUser());
         return repository.save(cat);
     }
 
@@ -35,6 +36,9 @@ public class CategoryService {
 
     public Category update(@NonNull Category cat) {
         Category catdb = findById(cat.getId());
+        if (!catdb.getOwner().equals(authProvider.getAuthenticatedUser())) {
+            throw new AccessDeniedException("Não autorizado");
+        }
 
         catdb.setOwner(cat.getOwner());
         catdb.setName(cat.getName());
@@ -91,13 +95,8 @@ public class CategoryService {
         return repository.findAll();
     }
 
-    public List<Category> listAllByOwner(Long id) {
-        return repository.getCategoriesByOwnerId(id);
-    }
-
-    public List<Category> listAllByOwnerEmail(@Email String request) {
-        User user = userService.findByEmail(request);
-
+    public List<Category> listAllByOwner() {
+        User user = authProvider.getAuthenticatedUser();
         return repository.getCategoriesByOwner(user);
     }
 }
