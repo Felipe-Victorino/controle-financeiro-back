@@ -7,19 +7,20 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 public class UserDTOResponse {
 
-    private Long id;
-
     @NotBlank(message = "{user.name.needed}")
-    @Size(min=2, max=100)
+    @Size(min = 2, max = 100)
     private String name;
 
     @NotBlank
     @Email(message = "{user.email.needed}")
     private String email;
+
+    private List<String> authorities;
 
     @PastOrPresent
     private LocalDateTime createdIn;
