@@ -1,6 +1,6 @@
 package com.finfin.backend.service;
 
-import com.finfin.backend.dto.app.user.UserRequestDTO;
+import com.finfin.backend.dto.app.user.UserDTORequest;
 import com.finfin.backend.dto.auth.AuthenticationResultDTO;
 import com.finfin.backend.dto.auth.UserAuthDTO;
 import com.finfin.backend.entity.RefreshToken;
@@ -29,11 +29,11 @@ public class AuthenticationService {
     @Autowired
     private UserRepository userRepository;
 
-    public AuthenticationResultDTO authenticate(UserRequestDTO user) {
+    public AuthenticationResultDTO authenticate(UserDTORequest user) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPasswd()));
         Optional<User> userDb = userRepository.findByEmail(user.getEmail());
-        if(userDb.isEmpty()){
+        if (userDb.isEmpty()) {
             throw new ResourceNotFoundException("Usuário não encontrado");
         }
 
