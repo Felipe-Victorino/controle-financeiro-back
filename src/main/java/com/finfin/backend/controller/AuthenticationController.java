@@ -1,6 +1,6 @@
 package com.finfin.backend.controller;
 
-import com.finfin.backend.dto.app.user.UserRequestDTO;
+import com.finfin.backend.dto.app.user.UserDTORequest;
 import com.finfin.backend.dto.auth.AuthenticationResultDTO;
 import com.finfin.backend.dto.auth.UserAuthDTO;
 import com.finfin.backend.dto.auth.forgotpassword.ForgotDTORequest;
@@ -55,7 +55,7 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<UserAuthDTO> login(
-            @RequestBody UserRequestDTO user,
+            @RequestBody UserDTORequest user,
             HttpServletResponse response
     ) {
         AuthenticationResultDTO result = authenticationService.authenticate(user);
@@ -96,7 +96,7 @@ public class AuthenticationController {
                 .httpOnly(true)
                 .secure(false) // true em produção, com HTTPS
                 .sameSite("Lax")
-                .path("/auth")
+                .path("/api/v1/auth")
                 .maxAge(Duration.ofMillis(refreshExpiration))
                 .build();
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
@@ -113,7 +113,7 @@ public class AuthenticationController {
 
 
     @PostMapping("register")
-    public ResponseEntity<RegisterDTOResponse> register(@RequestBody @Valid RegisterDTORequest request){
+    public ResponseEntity<RegisterDTOResponse> register(@RequestBody @Valid RegisterDTORequest request) {
 
         User userdb = userService.insert(this.mapper.map(request, User.class));
 
@@ -128,10 +128,10 @@ public class AuthenticationController {
     }
 
     @PostMapping("forgot-password")
-    public ResponseEntity<String> forgotPassword(@RequestBody @Valid ForgotDTORequest request){
+    public ResponseEntity<String> forgotPassword(@RequestBody @Valid ForgotDTORequest request) {
 
         User user = userService.findByEmail(request.getEmail());
-        if(user == null) {
+        if (user == null) {
             throw new ResourceNotFoundException("Email não encontrado");
         }
         PasswordRecoveryToken prt = passwordRecoveryTokenService.createNew(user);
@@ -142,27 +142,27 @@ public class AuthenticationController {
     }
 
     @PostMapping("reset-password")
-    public ResponseEntity<String> resetPassword(@RequestBody @Valid ResetDTORequest request){
+    public ResponseEntity<String> resetPassword(@RequestBody @Valid ResetDTORequest request) {
 
         PasswordRecoveryToken pwt = passwordRecoveryTokenService.findByToken(UUID.fromString(request.getToken()));
 
-        if (LocalDateTime.now().isAfter(pwt.getExpirationTime())){
-           String response = "Token expirado";
+        if (LocalDateTime.now().isAfter(pwt.getExpirationTime())) {
+            String response = "Token expirado";
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
         }
 
         User user = pwt.getUser();
-        if(user == null){
+        if (user == null) {
             String response = "Token inválido";
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
         }
 
-        if(pwt.isUsed()){
+        if (pwt.isUsed()) {
 
             String response = "Token já utilizado";
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
 
-        } else if(userService.confirmPassword(request.getNewPasswd(), request.getConfirmPasswd())){
+        } else if (userService.confirmPassword(request.getNewPasswd(), request.getConfirmPasswd())) {
 
             user.setHashedPassword(request.getNewPasswd());
             pwt.setUsed(true);
