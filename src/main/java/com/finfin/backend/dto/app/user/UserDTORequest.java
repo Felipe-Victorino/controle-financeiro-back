@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class UserRequestDTO {
+public class UserDTORequest {
     @NotBlank(message = "{user.email.needed}")
     @Email
     private String email;
