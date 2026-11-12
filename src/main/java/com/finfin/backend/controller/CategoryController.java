@@ -24,7 +24,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/category")
-@CrossOrigin
 public class CategoryController implements CrudController<CategoryDTORequest, Long, CategoryDTOResponse> {
 
     @Autowired
@@ -34,10 +33,9 @@ public class CategoryController implements CrudController<CategoryDTORequest, Lo
     ModelMapper mapper;
 
     @GetMapping("")
-    public ResponseEntity<List<CategoryDTOResponse>> getAll(Authentication auth) {
+    public ResponseEntity<List<CategoryDTOResponse>> getAll() {
 
-        String ownerEmail = auth.getName();
-        List<Category> categoryList = service.listAllByOwnerEmail(ownerEmail);
+        List<Category> categoryList = service.listAllByOwner();
 
         List<CategoryDTOResponse> response = categoryList.stream()
                 .map(category -> mapper.map(category, CategoryDTOResponse.class))
@@ -51,7 +49,7 @@ public class CategoryController implements CrudController<CategoryDTORequest, Lo
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CategoryDTOResponse> get(@PathVariable Long id, Authentication auth) {
+    public ResponseEntity<CategoryDTOResponse> get(@PathVariable Long id) {
         Category catdb = service.findById(id);
         CategoryDTOResponse response = mapper.map(catdb, CategoryDTOResponse.class);
 
@@ -59,17 +57,16 @@ public class CategoryController implements CrudController<CategoryDTORequest, Lo
     }
 
     @PostMapping("")
-    public ResponseEntity<CategoryDTOResponse> create(@RequestBody @Valid CategoryDTORequest request, Authentication auth) {
-        String ownerEmail = auth.getName();
+    public ResponseEntity<CategoryDTOResponse> create(@RequestBody @Valid CategoryDTORequest request) {
 
-        Category cat = service.insert(ownerEmail, this.mapper.map(request, Category.class));
+        Category cat = service.insert(this.mapper.map(request, Category.class));
 
         CategoryDTOResponse response = this.mapper.map(cat, CategoryDTOResponse.class);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable Long id, Authentication auth) {
+    public ResponseEntity<String> delete(@PathVariable Long id) {
 
         service.delete(id);
 
@@ -79,11 +76,11 @@ public class CategoryController implements CrudController<CategoryDTORequest, Lo
     @PutMapping("/{id}")
     public ResponseEntity<CategoryDTOResponse> update(
             @PathVariable Long id,
-            @RequestBody @Valid CategoryDTORequest request,
-            Authentication auth
+            @RequestBody @Valid CategoryDTORequest request
     ) {
+        Category catdb = service.findById(id);
         Category cat = service.update(this.mapper.map(request, Category.class));
-
+        cat.setId(id);
         CategoryDTOResponse response = this.mapper.map(cat, CategoryDTOResponse.class);
 
         return ResponseEntity.ok().body(response);
