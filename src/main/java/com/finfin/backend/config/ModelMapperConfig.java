@@ -84,14 +84,20 @@ public class ModelMapperConfig {
     private void mapTransactionDTO(ModelMapper modelMapper) {
         modelMapper.createTypeMap(TransactionDTORequest.class, Transaction.class)
                 .addMappings(m -> {
-                    m.using(converter.idToCategoryConverter)
-                            .map(TransactionDTORequest::getCategoryID, Transaction::setCategory);
-                    m.using(converter.idToWalletConverter)
-                            .map(TransactionDTORequest::getWalletID, Transaction::setWallet);
-
+                    m.skip(Transaction::setId);
+                    m.skip(Transaction::setWallet);     // comes from the URL
+                    m.skip(Transaction::setCategory);   // resolved and checked in the service
+                    m.skip(Transaction::setCreatedBy);  // comes from the logged-in user
+                    m.skip(Transaction::setCreatedIn);
                 });
 
-        modelMapper.createTypeMap(Transaction.class, TransactionDTOResponse.class);
+        modelMapper.createTypeMap(Transaction.class, TransactionDTOResponse.class)
+                .addMappings(m -> {
+                    m.map(t -> t.getWallet().getId(), TransactionDTOResponse::setWalletId);
+                    m.map(t -> t.getCategory().getId(), TransactionDTOResponse::setCategoryId);
+                    m.using(converter.userToNameConverter)
+                            .map(Transaction::getCreatedBy, TransactionDTOResponse::setCreatedBy);
+                });
     }
 
 
