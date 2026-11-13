@@ -42,7 +42,7 @@ public class CategoryController implements CrudController<CategoryDTORequest, Lo
                 .toList();
 
         if (response.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return ResponseEntity.ok(List.of());
         }
 
         return ResponseEntity.ok(response);
