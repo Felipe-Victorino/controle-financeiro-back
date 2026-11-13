@@ -55,7 +55,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ErrorResponse> treatResourceNotFoundException(ResourceNotFoundException ex){
+    public ResponseEntity<ErrorResponse> treatResourceNotFoundException(ResourceNotFoundException ex) {
         String message = ex.getMessage();
 
         ErrorResponse error = new ErrorResponse(
@@ -69,7 +69,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
-    public ResponseEntity<ErrorResponse> treatMissingRequestParameterException(MissingServletRequestParameterException ex){
+    public ResponseEntity<ErrorResponse> treatMissingRequestParameterException(MissingServletRequestParameterException ex) {
         String message = ex.getMessage();
 
         ErrorResponse error = new ErrorResponse(
@@ -82,7 +82,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ErrorResponse> treatHttpMessageNotReadableException(HttpMessageNotReadableException ex){
+    public ResponseEntity<ErrorResponse> treatHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
         String message = ex.getMessage();
 
         ErrorResponse error = new ErrorResponse(
@@ -95,7 +95,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(BusinessException.class)
-    public ResponseEntity<ErrorResponse> treatBusinessException(BusinessException ex){
+    public ResponseEntity<ErrorResponse> treatBusinessException(BusinessException ex) {
         String message = ex.getMessage();
 
         ErrorResponse error = new ErrorResponse(
@@ -107,7 +107,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<ErrorResponse> treatAcessDeniedException(AccessDeniedException ex){
+    public ResponseEntity<ErrorResponse> treatAcessDeniedException(AccessDeniedException ex) {
         String message = ex.getMessage();
 
         ErrorResponse error = new ErrorResponse(
@@ -120,7 +120,19 @@ public class GlobalExceptionHandler {
 
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<ErrorResponse> treatDataIntegrityViolationException(DataIntegrityViolationException ex){
+    public ResponseEntity<ErrorResponse> treatDataIntegrityViolationException(DataIntegrityViolationException ex) {
+        String message = ex.getMessage();
+
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.CONFLICT.value(),
+                message,
+                LocalDateTime.now()
+        );
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> treatIllegalArgumentException(IllegalArgumentException ex) {
         String message = ex.getMessage();
 
         ErrorResponse error = new ErrorResponse(
