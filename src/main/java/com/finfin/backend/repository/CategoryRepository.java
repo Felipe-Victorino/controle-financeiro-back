@@ -6,11 +6,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     @Query("select c from category c where c.owner = ?1")
     List<Category> getCategoriesByOwnerId(Long id);
+
     List<Category> getCategoriesByOwner(User owner);
 
+    Optional<Category> findByIdAndOwnerId(Long categoryId, Long id);
 }
