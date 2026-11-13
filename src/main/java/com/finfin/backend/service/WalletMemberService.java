@@ -1,5 +1,6 @@
 package com.finfin.backend.service;
 
+import com.finfin.backend.dto.app.walletmember.WalletMemberDTORequest;
 import com.finfin.backend.entity.User;
 import com.finfin.backend.entity.Wallet;
 import com.finfin.backend.entity.WalletMember;
@@ -34,13 +35,13 @@ public class WalletMemberService {
         return repository.findByWallet_Id(wallet.getId());
     }
 
-    public WalletMember addMember(UUID walletId, String email, RoleWallet role) {
-        if (role == RoleWallet.OWNER) {
+    public WalletMember addMember(UUID walletId, WalletMemberDTORequest request) {
+        if (request.getRole() == RoleWallet.OWNER) {
             throw new IllegalArgumentException("Não é possível atribuir o papel de proprietário");
         }
         Wallet wallet = walletService.findOwned(walletId);
 
-        User user = userService.findByEmail(email);
+        User user = userService.findByEmail(request.getUserEmail());
         if (user == null) {
             throw new ResourceNotFoundException("Usuário não encontrado");
         }
@@ -51,7 +52,7 @@ public class WalletMemberService {
         WalletMember member = new WalletMember();
         member.setWallet(wallet);
         member.setUser(user);
-        member.setRole(role);
+        member.setRole(request.getRole());
         return repository.save(member);
     }
 
