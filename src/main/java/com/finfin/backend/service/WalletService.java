@@ -87,19 +87,23 @@ public class WalletService {
         return wallet;
     }
 
+    public Wallet findWritable(@NonNull UUID id) {
+        Wallet wallet = findAccessible(id); // 404 if the user isn't in the wallet
+        Long currentId = authProvider.getAuthenticatedUser().getId();
+        boolean canWrite = wallet.getMembers().stream()
+                .anyMatch(m -> m.getUser().getId().equals(currentId)
+                        && (m.getRole() == RoleWallet.OWNER || m.getRole() == RoleWallet.EDITOR));
+        if (!canWrite) {
+            throw new AccessDeniedException("Sem permissão para alterar esta carteira");
+        }
+        return wallet;
+    }
 
     public Wallet addTransaction(@NonNull Transaction t, @NonNull Wallet w) {
         Wallet wdb = findAccessible(w.getId());
         wdb.getTransactions().add(t);
         return repository.save(wdb);
     }
-
-    public Wallet updateOwner(@NonNull Wallet w) {
-        Wallet wbd = findOwned(w.getId());
-        wbd.setOwner(w.getOwner());
-        return repository.save(wbd);
-    }
-
 
     public List<Wallet> listAll() {
         User user = authProvider.getAuthenticatedUser();
