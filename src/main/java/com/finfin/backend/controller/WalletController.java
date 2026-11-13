@@ -4,7 +4,6 @@ import com.finfin.backend.dto.app.wallet.WalletDTORequest;
 import com.finfin.backend.dto.app.wallet.WalletDTOResponse;
 
 import com.finfin.backend.entity.Wallet;
-import com.finfin.backend.security.UserAuthProvider;
 import com.finfin.backend.service.WalletService;
 
 import org.modelmapper.ModelMapper;
@@ -34,9 +33,6 @@ public class WalletController implements CrudController<WalletDTORequest, UUID, 
     @Autowired
     ModelMapper mapper;
 
-    @Autowired
-    UserAuthProvider authProvider;
-
     @Override
     @PostMapping
     public ResponseEntity<WalletDTOResponse> create(@RequestBody WalletDTORequest request) {
@@ -63,7 +59,7 @@ public class WalletController implements CrudController<WalletDTORequest, UUID, 
                 .toList();
 
         if (responseList.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return ResponseEntity.ok(List.of());
         }
 
         return ResponseEntity.ok(responseList);
