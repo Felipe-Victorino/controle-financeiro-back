@@ -11,17 +11,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
-import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Digits;
-import jakarta.validation.constraints.FutureOrPresent;
+
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-
-import jakarta.validation.constraints.Positive;
 
 
 import java.math.BigDecimal;
