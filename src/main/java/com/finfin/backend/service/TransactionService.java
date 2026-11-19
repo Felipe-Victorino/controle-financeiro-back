@@ -5,13 +5,19 @@ import com.finfin.backend.entity.Transaction;
 import com.finfin.backend.entity.User;
 import com.finfin.backend.entity.Wallet;
 import com.finfin.backend.entity.enums.TransactionType;
+import com.finfin.backend.event.TransactionChangedEvent;
 import com.finfin.backend.exception.ResourceNotFoundException;
 import com.finfin.backend.repository.CategoryRepository;
 import com.finfin.backend.repository.TransactionRepository;
 import com.finfin.backend.security.UserAuthProvider;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.List;
 import java.util.UUID;
@@ -21,12 +27,18 @@ public class TransactionService {
 
     @Autowired
     TransactionRepository repository;
+
+    @Autowired
+    TransactionEventService eventService;
     @Autowired
     CategoryRepository categoryRepository;
     @Autowired
     WalletService walletService;
     @Autowired
     UserAuthProvider authProvider;
+
+    @Autowired
+    ApplicationEventPublisher publisher;
 
     public List<Transaction> list(UUID walletId) {
         walletService.findAccessible(walletId);
@@ -59,7 +71,9 @@ public class TransactionService {
         t.setWallet(wallet);
         t.setCreatedBy(current);
         t.setCategory(resolveCategory(categoryId, t.getType(), current));
-        return repository.save(t);
+        Transaction trans = repository.save(t);
+        publisher.publishEvent(new TransactionChangedEvent(walletId, "inserted"));
+        return trans;
     }
 
     public Transaction update(UUID walletId, Long id, Long categoryId, @NonNull Transaction changes) {
@@ -72,11 +86,19 @@ public class TransactionService {
         tdb.setDateTransaction(changes.getDateTransaction());
         tdb.setCategory(resolveCategory(categoryId, changes.getType(),
                 authProvider.getAuthenticatedUser()));
-        return repository.save(tdb);
+        Transaction trans = repository.save(tdb);
+        publisher.publishEvent(new TransactionChangedEvent(walletId, "inserted"));
+        return trans;
     }
 
     public void delete(UUID walletId, Long id) {
         walletService.findWritable(walletId);
         repository.delete(findInWallet(walletId, id));
+        publisher.publishEvent(new TransactionChangedEvent(walletId, "inserted"));
+    }
+
+    public SseEmitter openStream(UUID walletId) {
+        walletService.findAccessible(walletId);
+        return eventService.register(walletId);
     }
 }
