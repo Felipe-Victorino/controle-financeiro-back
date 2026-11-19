@@ -9,8 +9,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.UUID;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,6 +17,7 @@ public class WalletMemberDTORequest {
     @NotBlank
     private String userEmail;
 
+    @NotNull 
     @Enumerated(EnumType.STRING)
     private RoleWallet role;
 }
