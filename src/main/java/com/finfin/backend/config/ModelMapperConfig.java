@@ -14,7 +14,6 @@ import com.finfin.backend.entity.User;
 import com.finfin.backend.entity.Wallet;
 import com.finfin.backend.service.ConverterService;
 import org.modelmapper.ModelMapper;
-
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -60,7 +59,7 @@ public class ModelMapperConfig {
 // entity -> response
         modelMapper.createTypeMap(Wallet.class, WalletDTOResponse.class)
                 .addMappings(m -> {
-                    m.using(converter.userToNameConverter)
+                    m.using(converter.userToEmailConverter)
                             .map(Wallet::getOwner, WalletDTOResponse::setOwnerEmail);
                     m.using(converter.membersToEmailsConverter)
                             .map(Wallet::getMembers, WalletDTOResponse::setMemberEmails);
@@ -95,7 +94,7 @@ public class ModelMapperConfig {
                 .addMappings(m -> {
                     m.map(t -> t.getWallet().getId(), TransactionDTOResponse::setWalletId);
                     m.map(t -> t.getCategory().getId(), TransactionDTOResponse::setCategoryId);
-                    m.using(converter.userToNameConverter)
+                    m.using(converter.userToEmailConverter)
                             .map(Transaction::getCreatedBy, TransactionDTOResponse::setCreatedBy);
                 });
     }
