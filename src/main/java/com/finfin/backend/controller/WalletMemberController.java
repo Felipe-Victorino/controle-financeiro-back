@@ -2,7 +2,7 @@ package com.finfin.backend.controller;
 
 import com.finfin.backend.dto.app.walletmember.WalletMemberDTORequest;
 import com.finfin.backend.dto.app.walletmember.WalletMemberDTOResponse;
-
+import com.finfin.backend.dto.app.walletmember.WalletMemberDTORoleRequest;
 import com.finfin.backend.entity.WalletMember;
 import com.finfin.backend.service.WalletMemberService;
 import jakarta.validation.Valid;
@@ -47,7 +47,7 @@ public class WalletMemberController {
     }
 
     @PutMapping("/{memberId}")
-    public ResponseEntity<WalletMemberDTOResponse> update(@PathVariable UUID walletId, @PathVariable Long memberId, @Valid @RequestBody WalletMemberDTORequest request) {
+    public ResponseEntity<WalletMemberDTOResponse> update(@PathVariable UUID walletId, @PathVariable Long memberId, @Valid @RequestBody WalletMemberDTORoleRequest request) {
         WalletMember member = service.updateRole(walletId, memberId, request.getRole());
         return ResponseEntity.ok(mapper.map(member, WalletMemberDTOResponse.class));
     }
