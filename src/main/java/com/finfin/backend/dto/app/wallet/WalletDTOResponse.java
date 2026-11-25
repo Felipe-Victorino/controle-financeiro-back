@@ -15,20 +15,10 @@ import java.util.UUID;
 @NoArgsConstructor
 public class WalletDTOResponse {
 
-    UUID id;
-
-
-    @Size(min = 2, max = 128)
+    private UUID id;
     private String name;
-
-
     private String ownerEmail;
-
-    List<String> memberEmails;
-
-    @Size(max = 255)
+    private List<String> memberEmails;
     private String description;
-
-    @PastOrPresent
     private LocalDateTime createdIn;
 }

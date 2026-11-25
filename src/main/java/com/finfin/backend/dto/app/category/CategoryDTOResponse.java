@@ -1,7 +1,7 @@
 package com.finfin.backend.dto.app.category;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.finfin.backend.entity.enums.TransactionType;
-
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -34,5 +34,6 @@ public class CategoryDTOResponse {
     @NotNull
     private TransactionType type;
 
+    @JsonProperty("isActive")
     private boolean isActive;
 }

@@ -22,6 +22,6 @@ public class TransactionDTOResponse {
     private BigDecimal value;
     private String description;
     private LocalDate dateTransaction;
-    private String createdBy;       // the creator's name
+    private String createdBy;
     private LocalDateTime createdIn;
 }

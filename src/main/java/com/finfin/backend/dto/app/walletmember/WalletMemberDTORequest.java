@@ -3,6 +3,7 @@ package com.finfin.backend.dto.app.walletmember;
 import com.finfin.backend.entity.enums.RoleWallet;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -15,9 +16,10 @@ import lombok.NoArgsConstructor;
 public class WalletMemberDTORequest {
 
     @NotBlank
+    @Email
     private String userEmail;
 
-    @NotNull 
+    @NotNull
     @Enumerated(EnumType.STRING)
     private RoleWallet role;
 }
