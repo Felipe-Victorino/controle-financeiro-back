@@ -6,7 +6,6 @@ import com.finfin.backend.entity.Wallet;
 import com.finfin.backend.entity.WalletMember;
 import org.modelmapper.Converter;
 import com.finfin.backend.entity.Category;
-
 import org.modelmapper.spi.MappingContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -74,7 +73,7 @@ public class ConverterService {
                     .map(wm -> wm.getUser().getEmail())
                     .toList();
 
-    public Converter<User, String> userToNameConverter = new Converter<>() {
+    public Converter<User, String> userToEmailConverter = new Converter<>() {
 
         @Override
         public String convert(MappingContext<User, String> context) {
@@ -82,9 +81,9 @@ public class ConverterService {
                 return "";
             }
 
-            return context.getSource().getName();
+            return context.getSource().getEmail();
         }
     };
-    
+
 
 }
